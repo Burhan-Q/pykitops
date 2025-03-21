@@ -179,22 +179,21 @@ class Kitfile(PydanticKitfile):
         # kitfile has been successfully loaded into data
         self.build(**data)
 
-    def to_yaml(self, no_empty_values: bool = True) -> str:
+    def to_yaml(self, suppress_empty_values: bool = True) -> str:
         """
         Serialize the Kitfile to YAML format.
 
         Args:
-            no_empty_values (bool, optional): Whether to suppress
+            suppress_empty_values (bool, optional): Whether to suppress
                 empty values. Defaults to True.
         Returns:
             str: YAML representation of the Kitfile.
         """
-        dict_to_print: Dict = self._data
-        if suppress_empty_values:
-            dict_to_print = copy.deepcopy(self._data)
-            dict_to_print = clean_empty_items(dict_to_print)
-
-        return yaml.safe_dump(data=dict_to_print, sort_keys=False, default_flow_style=False)
+        return yaml.safe_dump(
+            data=self.model_dump(exclude_unset=suppress_empty_values, exclude_none=suppress_empty_values),
+            sort_keys=False,
+            default_flow_style=False,
+        )
 
     def print(self) -> None:
         """
