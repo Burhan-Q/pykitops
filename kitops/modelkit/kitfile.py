@@ -19,7 +19,6 @@ Define the Kitfile class to manage KitOps ModelKits and Kitfiles.
 """
 
 from pathlib import Path
-from typing import Any, Optional
 from warnings import warn
 
 import yaml
@@ -41,7 +40,7 @@ class Kitfile(PydanticKitfile):
         model (Optional[ModelSection | dict | None]): Details of the models included. Defaults to None.
     """
 
-    def __init__(self, path: Optional[str | None] = None, **kwargs) -> None:
+    def __init__(self, path: str | None = None, **kwargs) -> None:
         """
         Initialize the Kitfile from a path to an existing Kitfile, or
         create an empty Kitfile.
@@ -104,12 +103,15 @@ class Kitfile(PydanticKitfile):
                  description: Model description
                  license: Apache-2.0'
         """
-        config = {}
-        if path:
-            config: dict[str, Any] = {} | self.load(path=path) | kwargs
-        else:
-            config = {"manifestVersion": "1.0.0"} | kwargs
-        super().__init__(**config)
+        match (bool(path), bool(kwargs)):
+            case (False, False):
+                super().__init__()
+            case (True, False):
+                super().__init__(**self.load(path))  # type: ignore
+            case (False, True):
+                super().__init__(**kwargs)
+            case (True, True):
+                raise ValueError("Only provide 'path' or keyword arguments, not both.")
 
     def load(self, path: str) -> dict:
         """
