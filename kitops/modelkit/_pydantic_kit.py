@@ -188,13 +188,20 @@ class PydanticKitfile(BaseModel):
     """
 
     prop_manifestVersion: str = Field(
-        default="1.0.0", examples=["1.0.0", "0.13a"], coerce_numbers_to_str=True, repr=False, alias="manifestVersion"
+        default="1.0.0",
+        examples=["1.0.0", "0.13a"],
+        coerce_numbers_to_str=True,
+        repr=False,
+        alias="manifestVersion",
+        exclude=True,
     )
-    prop_code: list[CodeEntry] = Field(default_factory=list, alias="code", repr=False)
-    prop_datasets: list[DatasetEntry] = Field(default_factory=list, alias="datasets", repr=False)
-    prop_docs: list[DocsEntry] = Field(default_factory=list, alias="docs", repr=False)
-    prop_package: Package = Field(default_factory=Package, alias="package", repr=False)
-    prop_model: ModelSection = Field(default_factory=lambda: ModelSection(path=""), alias="model", repr=False)
+    prop_code: list[CodeEntry] = Field(default_factory=list, alias="code", repr=False, exclude=True)
+    prop_datasets: list[DatasetEntry] = Field(default_factory=list, alias="datasets", repr=False, exclude=True)
+    prop_docs: list[DocsEntry] = Field(default_factory=list, alias="docs", repr=False, exclude=True)
+    prop_package: Package = Field(default_factory=Package, alias="package", repr=False, exclude=True)
+    prop_model: ModelSection = Field(
+        default_factory=lambda: ModelSection(path=""), alias="model", repr=False, exclude=True
+    )
 
     @computed_field(repr=True)
     @property
