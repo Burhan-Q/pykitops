@@ -18,28 +18,16 @@
 Define the PydanticKitfile class as parent to Kitfile.
 """
 
-import warnings
 from pathlib import Path
-from typing import Any, Optional, Self
+from typing import Any, Optional
 
-from pydantic import BaseModel, Field, computed_field, model_validator
-
-from .utils import WARN
+from pydantic import BaseModel, Field, computed_field
 
 
 class BasePathModel(BaseModel):
     """Base class for validating paths."""
 
-    path: str
-
-    @model_validator(mode="after")
-    def validate_path(self) -> Self:
-        """Validate that the path exists."""
-        if not Path(self.path).exists():
-            warnings.warn(f"{WARN}: the provided path '{self.path}' not found.")
-        if Path(self.path).is_absolute():
-            warnings.warn(message=f"{WARN}: Path must be relative to the current working directory.")
-        return self
+    path: str | Path
 
     def get(self, key: str, default: Any = None) -> Any:
         """
