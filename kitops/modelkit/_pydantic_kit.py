@@ -187,7 +187,9 @@ class PydanticKitfile(BaseModel):
         model (Optional[ModelSection | dict]): Details of the trained models included in the package.
     """
 
-    manifestVersion: str = Field(default=..., examples=["1.0.0", "0.13a"], coerce_numbers_to_str=True)
+    prop_manifestVersion: str = Field(
+        default="1.0.0", examples=["1.0.0", "0.13a"], coerce_numbers_to_str=True, repr=False, alias="manifestVersion"
+    )
     prop_code: list[CodeEntry] = Field(default_factory=list, alias="code", repr=False)
     prop_datasets: list[DatasetEntry] = Field(default_factory=list, alias="datasets", repr=False)
     prop_docs: list[DocsEntry] = Field(default_factory=list, alias="docs", repr=False)
@@ -196,19 +198,21 @@ class PydanticKitfile(BaseModel):
 
     @computed_field(repr=True)
     @property
-    def model(self) -> ModelSection:
-        return self.prop_model
+    def manifestVersion(self) -> str:
+        """Specifies the manifest format version."""
+        return self.prop_manifestVersion
 
-    @model.setter
-    def model(self, value: ModelSection | dict) -> None:
-        if isinstance(value, (dict, ModelSection)):
-            self.prop_model = ModelSection.model_validate(value)
+    @manifestVersion.setter
+    def manifestVersion(self, value: str) -> None:
+        if isinstance(value, (str, int, float)):
+            self.prop_manifestVersion = str(value)
         else:
-            raise TypeError(f"Expected dict or ModelSection, got {type(value)}")
+            raise TypeError(f"Expected str, got {type(value)}")
 
     @computed_field(repr=True)
     @property
     def package(self) -> Package:
+        """This section provides general information about the AI/ML project."""
         return self.prop_package
 
     @package.setter
@@ -221,6 +225,7 @@ class PydanticKitfile(BaseModel):
     @computed_field(repr=True)
     @property
     def code(self) -> list[CodeEntry]:
+        """Information about the source code."""
         return self.prop_code
 
     @code.setter
@@ -233,6 +238,7 @@ class PydanticKitfile(BaseModel):
     @computed_field(repr=True)
     @property
     def datasets(self) -> list[DatasetEntry]:
+        """Information about the datasets used."""
         return self.prop_datasets
 
     @datasets.setter
@@ -247,6 +253,7 @@ class PydanticKitfile(BaseModel):
     @computed_field(repr=True)
     @property
     def docs(self) -> list[DocsEntry]:
+        """Information about included documentation for the model."""
         return self.prop_docs
 
     @docs.setter
@@ -255,3 +262,16 @@ class PydanticKitfile(BaseModel):
             self.prop_docs = [DocsEntry.model_validate(item) if isinstance(item, dict) else item for item in value]
         else:
             raise TypeError(f"Expected list of DocsEntry or dict, got {type(value)}")
+
+    @computed_field(repr=True)
+    @property
+    def model(self) -> ModelSection:
+        """Details of the trained models included in the package."""
+        return self.prop_model
+
+    @model.setter
+    def model(self, value: ModelSection | dict) -> None:
+        if isinstance(value, (dict, ModelSection)):
+            self.prop_model = ModelSection.model_validate(value)
+        else:
+            raise TypeError(f"Expected dict or ModelSection, got {type(value)}")
