@@ -41,6 +41,19 @@ class BasePathModel(BaseModel):
             warnings.warn(message=f"{WARN}: Path must be relative to the current working directory.")
         return self
 
+    def get(self, key: str, default: Any = None) -> Any:
+        """
+        Get a value from the model by key.
+
+        Args:
+            key (str): The key to retrieve.
+            default (Any): Default value if the key does not exist.
+
+        Returns:
+            Any: The value associated with the key, or the default value if the key does not exist.
+        """
+        return getattr(self, key, default)
+
 
 class Package(BaseModel):
     """
@@ -57,6 +70,19 @@ class Package(BaseModel):
     version: Optional[str] = Field(default="", examples=["1.2.3", "0.13a"], coerce_numbers_to_str=True)
     description: Optional[str] = ""
     authors: Optional[list[str]] = []
+
+    def get(self, key: str, default: Any = None) -> Any:
+        """
+        Get a value from the model by key.
+
+        Args:
+            key (str): The key to retrieve.
+            default (Any): Default value if the key does not exist.
+
+        Returns:
+            Any: The value associated with the key, or the default value if the key does not exist.
+        """
+        return getattr(self, key, default)
 
 
 class CodeEntry(BasePathModel):
@@ -162,9 +188,9 @@ class PydanticKitfile(BaseModel):
     """
 
     manifestVersion: str = Field(default=..., examples=["1.0.0", "0.13a"], coerce_numbers_to_str=True)
-    code: Optional[list[CodeEntry]] = []
-    datasets: Optional[list[DatasetEntry]] = []
-    docs: Optional[list[DocsEntry]] = []
+    prop_code: list[CodeEntry] = Field(default_factory=list, alias="code", repr=False)
+    prop_datasets: list[DatasetEntry] = Field(default_factory=list, alias="datasets", repr=False)
+    prop_docs: list[DocsEntry] = Field(default_factory=list, alias="docs", repr=False)
     prop_package: Package = Field(default_factory=Package, alias="package", repr=False)
     prop_model: ModelSection = Field(default_factory=lambda: ModelSection(path=""), alias="model", repr=False)
 
@@ -172,7 +198,7 @@ class PydanticKitfile(BaseModel):
     @property
     def model(self) -> ModelSection:
         return self.prop_model
-    
+
     @model.setter
     def model(self, value: ModelSection | dict) -> None:
         if isinstance(value, (dict, ModelSection)):
@@ -184,10 +210,48 @@ class PydanticKitfile(BaseModel):
     @property
     def package(self) -> Package:
         return self.prop_package
-    
+
     @package.setter
     def package(self, value: Package | dict) -> None:
         if isinstance(value, (dict, Package)):
             self.prop_package = Package.model_validate(value)
         else:
             raise TypeError(f"Expected dict or ModelSection, got {type(value)}")
+
+    @computed_field(repr=True)
+    @property
+    def code(self) -> list[CodeEntry]:
+        return self.prop_code
+
+    @code.setter
+    def code(self, value: list[CodeEntry] | list[dict]) -> None:
+        if isinstance(value, list):
+            self.prop_code = [CodeEntry.model_validate(item) if isinstance(item, dict) else item for item in value]
+        else:
+            raise TypeError(f"Expected list of CodeEntry or dict, got {type(value)}")
+
+    @computed_field(repr=True)
+    @property
+    def datasets(self) -> list[DatasetEntry]:
+        return self.prop_datasets
+
+    @datasets.setter
+    def datasets(self, value: list[DatasetEntry] | list[dict]) -> None:
+        if isinstance(value, list):
+            self.prop_datasets = [
+                DatasetEntry.model_validate(item) if isinstance(item, dict) else item for item in value
+            ]
+        else:
+            raise TypeError(f"Expected list of DatasetEntry or dict, got {type(value)}")
+
+    @computed_field(repr=True)
+    @property
+    def docs(self) -> list[DocsEntry]:
+        return self.prop_docs
+
+    @docs.setter
+    def docs(self, value: list[DocsEntry] | list[dict]) -> None:
+        if isinstance(value, list):
+            self.prop_docs = [DocsEntry.model_validate(item) if isinstance(item, dict) else item for item in value]
+        else:
+            raise TypeError(f"Expected list of DocsEntry or dict, got {type(value)}")
