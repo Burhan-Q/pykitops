@@ -143,3 +143,184 @@ class TestKitfileMutation:
         assert kitfile.docs[0].path == "new_docs_path2/"
         with pytest.raises(TypeError):
             kitfile.docs = 123  # type: ignore
+
+
+class TestKitfileAttributeAccess:
+    def full_kitfile(self, fixtures: dict[str, Path]) -> Kitfile:
+        kitfile_path = fixtures["Kitfile_full"]
+        return Kitfile(path=str(kitfile_path))
+
+    def test_access_manifestVersion(self, fixtures: dict[str, Path]):
+        """Test access to manifestVersion attribute in Kitfile."""
+        kitfile = self.full_kitfile(fixtures)
+        assert kitfile.manifestVersion == "1.0"
+
+    def test_access_package(self, fixtures: dict[str, Path]):
+        """Test access to package attribute in Kitfile."""
+        kitfile = self.full_kitfile(fixtures)
+
+        assert kitfile.package.name == "Titanic-Survivability-Predictor"
+        assert kitfile.package["name"] == "Titanic-Survivability-Predictor"
+        assert kitfile.package.get("name") == "Titanic-Survivability-Predictor"
+
+        assert kitfile.package.version == "1.0.0"
+        assert kitfile.package["version"] == "1.0.0"
+        assert kitfile.package.get("version") == "1.0.0"
+
+        assert (
+            kitfile.package.description
+            == "A model attempting to predict passenger survivability of  the Titanic Shipwreck"
+        )
+        assert (
+            kitfile.package["description"]
+            == "A model attempting to predict passenger survivability of  the Titanic Shipwreck"
+        )
+        assert (
+            kitfile.package.get("description")
+            == "A model attempting to predict passenger survivability of  the Titanic Shipwreck"
+        )
+
+        assert kitfile.package.authors == ["Jozu"]
+        assert kitfile.package["authors"] == ["Jozu"]
+        assert kitfile.package.get("authors") == ["Jozu"]
+
+    def test_access_model(self, fixtures: dict[str, Path]):
+        """Test access to model attribute in Kitfile."""
+        kitfile = self.full_kitfile(fixtures)
+
+        assert kitfile.model.name == "titanic-survivability-predictor"
+        assert kitfile.model["name"] == "titanic-survivability-predictor"
+        assert kitfile.model.get("name") == "titanic-survivability-predictor"
+
+        assert kitfile.model.path == "model"
+        assert kitfile.model["path"] == "model"
+        assert kitfile.model.get("path") == "model"
+
+        assert kitfile.model.framework == "joblib"
+        assert kitfile.model["framework"] == "joblib"
+        assert kitfile.model.get("framework") == "joblib"
+
+        assert kitfile.model.version == "1.0"
+        assert kitfile.model["version"] == "1.0"
+        assert kitfile.model.get("version") == "1.0"
+
+        assert kitfile.model.description == "Directory containing figures and graphs exported as image files."
+        assert kitfile.model["description"] == "Directory containing figures and graphs exported as image files."
+        assert kitfile.model.get("description") == "Directory containing figures and graphs exported as image files."
+
+        assert kitfile.model.license == "Apache-2.0"
+        assert kitfile.model["license"] == "Apache-2.0"
+        assert kitfile.model.get("license") == "Apache-2.0"
+
+    def test_access_code(self, fixtures: dict[str, Path]):
+        """Test access to code attribute in Kitfile."""
+        kitfile = self.full_kitfile(fixtures)
+        expected: list[dict[str, str]] = [
+            {
+                "path": "requirements.txt",
+                "description": "Python packages required by this example.",
+                "license": "Apache-2.0",
+            },
+            {
+                "path": "titanic_survivability.ipynb",
+                "description": "Jupyter Notebook used to train, validate, optimize and  export the model.",
+                "license": "Apache-2.0",
+            },
+        ]
+
+        for c, e in zip(kitfile.code, expected):
+            assert c.path == e["path"]
+            assert c["path"] == e["path"]
+            assert c.get("path") == e["path"]
+
+            assert c.description == e["description"]
+            assert c["description"] == e["description"]
+            assert c.get("description") == e["description"]
+
+            assert c.license == e["license"]
+            assert c["license"] == e["license"]
+            assert c.get("license") == e["license"]
+
+    def test_access_datasets(self, fixtures: dict[str, Path]):
+        """Test access to datasets attribute in Kitfile."""
+        kitfile = self.full_kitfile(fixtures)
+        expected: list[dict[str, str]] = [
+            {
+                "name": "training",
+                "path": "data/train.csv",
+                "description": "Data to be used for model training.",
+                "license": "Apache-2.0",
+            },
+            {
+                "name": "testing",
+                "path": "data/test.csv",
+                "description": "Data to be used for model testing.",
+                "license": "Apache-2.0",
+            },
+        ]
+
+        for d, e in zip(kitfile.datasets, expected):
+            assert d.name == e["name"]
+            assert d["name"] == e["name"]
+            assert d.get("name") == e["name"]
+
+            assert d.path == e["path"]
+            assert d["path"] == e["path"]
+            assert d.get("path") == e["path"]
+
+            assert d.description == e["description"]
+            assert d["description"] == e["description"]
+            assert d.get("description") == e["description"]
+
+            assert d.license == e["license"]
+            assert d["license"] == e["license"]
+            assert d.get("license") == e["license"]
+    
+    def test_access_docs(self, fixtures: dict[str, Path]):
+        """Test access to docs attribute in Kitfile."""
+        kitfile = self.full_kitfile(fixtures)
+        expected: list[dict[str, str]] = [
+            {
+                "path": "README.md",
+                "description": "Important notes about the project.",
+            },
+            {
+                "path": "images",
+                "description": "Directory containing figures and graphs exported as image files.",
+            },
+        ]
+
+        for d, e in zip(kitfile.docs, expected):
+            assert d.path == e["path"]
+            assert d["path"] == e["path"]
+            assert d.get("path") == e["path"]
+
+            assert d.description == e["description"]
+            assert d["description"] == e["description"]
+            assert d.get("description") == e["description"]
+    
+    def test_access_parts(self, fixtures: dict[str, Path]):
+        """Test access to parts attribute in Kitfile."""
+        kitfile = self.full_kitfile(fixtures)
+        expected_parts = [
+            {"path": "config.json", "name": "config", "type": "config file"},
+            {"path": "tokenizer.json"},
+            {"path": "tokenizer_config.json"},
+            {"path": "vocab.txt"},
+        ]
+
+        if kitfile.model.parts is not None:
+            for part, expected in zip(kitfile.model.parts, expected_parts):
+                assert part.path == expected["path"]
+                assert part["path"] == expected["path"]
+                assert part.get("path") == expected["path"]
+
+                if "name" in expected:
+                    assert part.name == expected["name"]
+                    assert part["name"] == expected["name"]
+                    assert part.get("name") == expected["name"]
+
+                if "type" in expected:
+                    assert part.type == expected["type"]
+                    assert part["type"] == expected["type"]
+                    assert part.get("type") == expected["type"]
