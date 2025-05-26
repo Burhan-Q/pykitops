@@ -36,7 +36,6 @@ class Color(enum.Enum):
 
 
 IS_A_TTY = sys.stdout.isatty()
-WARN = f"{Color.YELLOW.value}Warning{Color.RESET.value}" if IS_A_TTY else "Warning"
 
 
 def validate_dict(value: Dict[str, Any], allowed_keys: Set[str]):
