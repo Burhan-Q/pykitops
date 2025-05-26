@@ -1,13 +1,13 @@
 import os
 
+import yaml
+
 from kitops.modelkit import Package
 from kitops.modelkit.kitfile import Kitfile
 
 
 def test_initialize_from_path(fixtures: dict[str, str]):
     kitfile = Kitfile(path=str(fixtures["Kitfile_full"]))
-    kitfile_dict = kitfile.model_dump()
-    blank_kitfile = Kitfile()
 
     assert kitfile.manifestVersion == "1.0"
 
@@ -18,9 +18,6 @@ def test_initialize_from_path(fixtures: dict[str, str]):
         == "A model attempting to predict passenger survivability of  the Titanic Shipwreck"
     )
     assert kitfile.package.get("authors") == ["Jozu"]
-
-    blank_kitfile.package = kitfile_dict["package"]
-    assert kitfile.package == blank_kitfile.package
 
     # assert code block
     assert len(kitfile.code) == 2
@@ -34,9 +31,6 @@ def test_initialize_from_path(fixtures: dict[str, str]):
     )
     assert kitfile.code[1].get("license") == "Apache-2.0"
 
-    blank_kitfile.code = kitfile_dict["code"]
-    assert kitfile.code == blank_kitfile.code
-
     # assert datasets block
     assert len(kitfile.datasets) == 2
     assert kitfile.datasets[0].get("name") == "training"
@@ -48,18 +42,12 @@ def test_initialize_from_path(fixtures: dict[str, str]):
     assert kitfile.datasets[1].get("description") == "Data to be used for model testing."
     assert kitfile.datasets[1].get("license") == "Apache-2.0"
 
-    blank_kitfile.datasets = kitfile_dict["datasets"]
-    assert kitfile.datasets == blank_kitfile.datasets
-
     # assert docs block
     assert len(kitfile.docs) == 2
     assert kitfile.docs[0].get("path") == "README.md"
     assert kitfile.docs[0].get("description") == "Important notes about the project."
     assert kitfile.docs[1].get("path") == "images"
     assert kitfile.docs[1].get("description") == "Directory containing figures and graphs exported as image files."
-
-    blank_kitfile.docs = kitfile_dict["docs"]
-    assert kitfile.docs == blank_kitfile.docs
 
     # assert model block
     assert kitfile.model.get("name") == "titanic-survivability-predictor"
@@ -68,9 +56,6 @@ def test_initialize_from_path(fixtures: dict[str, str]):
     assert kitfile.model.get("framework") == "joblib"
     assert kitfile.model.get("license") == "Apache-2.0"
     assert kitfile.model.get("version") == "1.0"
-
-    blank_kitfile.model = kitfile_dict["model"]
-    assert kitfile.model == blank_kitfile.model
 
     # assert model parts
     assert len(kitfile.model.get("parts")) == 4
@@ -81,14 +66,26 @@ def test_initialize_from_path(fixtures: dict[str, str]):
     assert kitfile.model.get("parts")[2].get("path") == "tokenizer_config.json"
     assert kitfile.model.get("parts")[3].get("path") == "vocab.txt"
 
-    assert kitfile.model.parts == blank_kitfile.model.parts
-
     # assert model parameters
     assert kitfile.model.get("parameters").get("param1") == "val1"
     assert kitfile.model.get("parameters").get("param2") == "val2"
     assert kitfile.model.get("parameters").get("items") == ["list item 1", "list item 2"]
 
-    assert kitfile.model.parameters == blank_kitfile.model.parameters
+
+def test_pydantic_init_from_path_vs_dict(fixtures: dict[str, str]):
+    """Test that Kitfile can be initialized from a path and dictionary with same values."""
+    kitfile = Kitfile(path=str(fixtures["Kitfile_full"]))
+    with open(fixtures["Kitfile_full"], "r", encoding="utf-8") as f:
+        kitfile_dict = yaml.safe_load(f)
+    kitfile_from_dict = Kitfile(**kitfile_dict)
+
+    assert kitfile.package == kitfile_from_dict.package
+    assert kitfile.code == kitfile_from_dict.code
+    assert kitfile.datasets == kitfile_from_dict.datasets
+    assert kitfile.docs == kitfile_from_dict.docs
+    assert kitfile.model == kitfile_from_dict.model
+    assert kitfile.model.parts == kitfile_from_dict.model.parts
+    assert kitfile.model.parameters == kitfile_from_dict.model.parameters
 
 
 def test_initialize_from_path_and_mutate(fixtures: dict[str, str]):
