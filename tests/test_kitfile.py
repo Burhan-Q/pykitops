@@ -65,6 +65,13 @@ class TestKitfileCreation:
         assert kitfile.package.name == "Package Packer"
         assert kitfile.model.name == "Pack Model"
 
+    def test_create_from_dict(self, fixtures: dict[str, Path]):
+        """Test creation of a Kitfile from a dictionary."""
+        kitfile_dict = yaml.safe_load(fixtures["Kitfile_full"].read_text("utf-8"))
+        assert Kitfile(**kitfile_dict).model_dump(exclude_unset=True) == kitfile_dict
+
+        Kitfile.model_validate(kitfile_dict)  # ensure validation works
+
     def test_create_null_kitfile(self):
         """Test creation of a Kitfile with None values."""
         with pytest.raises(ValidationError):
