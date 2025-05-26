@@ -42,6 +42,18 @@ class BasePathModel(BaseModel):
         """
         return getattr(self, key, default)
 
+    def __getitem__(self, key: str) -> Any:
+        """
+        Get a value from the instance by key.
+
+        Args:
+            key (str): The key to retrieve.
+
+        Returns:
+            Any: The value associated with the key.
+        """
+        return getattr(self, key)
+
 
 class Package(BaseModel):
     """
@@ -71,6 +83,18 @@ class Package(BaseModel):
             Any: The value associated with the key, or the default value if the key does not exist.
         """
         return getattr(self, key, default)
+
+    def __getitem__(self, key: str) -> Any:
+        """
+        Get a value from the instance by key.
+
+        Args:
+            key (str): The key to retrieve.
+
+        Returns:
+            Any: The value associated with the key.
+        """
+        return getattr(self, key)
 
 
 class CodeEntry(BasePathModel):
