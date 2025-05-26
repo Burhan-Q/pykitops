@@ -62,9 +62,7 @@ setup()
 
 # get a fresh copy of the "titanic-survivability:processed-data-v5" ModelKit
 modelkit_tag = "jozu.ml/brett/titanic-survivability:processed-data-v5"
-manager = ModelKitManager(
-    working_directory="temp/titanic-partial", modelkit_tag=modelkit_tag
-)
+manager = ModelKitManager(working_directory="temp/titanic-partial", modelkit_tag=modelkit_tag)
 manager.pull_and_unpack_modelkit(load_kitfile=True)
 manager.kitfile.print()
 
@@ -73,16 +71,17 @@ build_model()
 # update the Kitfile
 kitfile = manager.kitfile
 kitfile.model = {
-        "name": "titanic-survivability-predictor",
-        "path": "model/model.joblib",
-        "license": "Apache 2.0",
-        "framework": "scikit-learn",
-        "version": "1.0",
-        "description": "RandomForestClassifier",
-    }
+    "name": "titanic-survivability-predictor",
+    "path": "model/model.joblib",
+    "license": "Apache 2.0",
+    "framework": "scikit-learn",
+    "version": "1.0",
+    "description": "RandomForestClassifier",
+}
 manager.kitfile.print()
 
-kitfile.model = ModelSection.model_validate({
+kitfile.model = ModelSection.model_validate(
+    {
         "name": "titanic-survivability-predictor",
         "path": "model/model.joblib",
         "license": "Apache 2.0",
@@ -94,11 +93,11 @@ kitfile.model = ModelSection.model_validate({
 manager.kitfile.print()
 
 kitfile.package = {
-        "name": "titanic-survivability-predictor",
-        "version": "1.0",
-        "description": "RandomForestClassifier",
-        "authors": ["brett"],
-    }
+    "name": "titanic-survivability-predictor",
+    "version": "1.0",
+    "description": "RandomForestClassifier",
+    "authors": ["brett"],
+}
 manager.kitfile.print()
 
 # update the ModelKit's tag to "latest"
