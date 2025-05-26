@@ -40,13 +40,13 @@ class Kitfile(PydanticKitfile):
         model (Optional[ModelSection | dict | None]): Details of the models included. Defaults to None.
     """
 
-    def __init__(self, path: str | None = None, **kwargs) -> None:
+    def __init__(self, path: str | Path | None = None, **kwargs) -> None:
         """
         Initialize the Kitfile from a path to an existing Kitfile, or
         create an empty Kitfile.
 
         Args:
-            path (str, optional): Path to existing Kitfile to load. Defaults to None.
+            path (str | Path, optional): Path to existing Kitfile to load. Defaults to None.
             kwargs: Additional keyword arguments.
 
         Returns:
@@ -113,13 +113,13 @@ class Kitfile(PydanticKitfile):
             case (True, True):
                 raise ValueError("Only provide 'path' or keyword arguments, not both.")
 
-    def load(self, path: str) -> dict:
+    def load(self, path: str | Path) -> dict:
         """
         Load Kitfile data from a yaml-formatted file and set the
         corresponding attributes.
 
         Args:
-            path (str): Path to the Kitfile.
+            path (str | Path): Path to the Kitfile.
         """
         kitfile_path = Path(path)
         if not kitfile_path.exists():
