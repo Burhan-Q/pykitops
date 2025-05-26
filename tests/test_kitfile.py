@@ -7,6 +7,7 @@ from kitops.modelkit.kitfile import Kitfile
 
 class TestKitfileCreation:
     def test_create_full_kitfile(self, fixtures: dict[str, Path]):
+        """Test creation of a full Kitfile from a fixture."""
         kitfile_path = fixtures["Kitfile_full"]
         kitfile = Kitfile(path=str(kitfile_path))
         assert kitfile is not None
@@ -15,14 +16,41 @@ class TestKitfileCreation:
         assert kitfile is not None and kitfile.model.name == "titanic-survivability-predictor"
 
     def test_create_blank_kitfile(self):
+        """Test creation of a blank Kitfile."""
         kitfile = Kitfile()
         assert kitfile is not None and kitfile == Kitfile()
 
     def test_create_from_template(self, fixtures: dict[str, Path]):
+        """Test creation of a Kitfile from a template."""
         kitfile_path = fixtures["Kitfile_full"]
         with pytest.raises(ValueError):
             kitfile = Kitfile(path=str(kitfile_path), manifestVersion="6.9.0")
             assert kitfile is not None and kitfile.manifestVersion == "6.9.0"  # this won't run
+
+    def test_create_from_kwargs(self):
+        """Test creation of a Kitfile from keyword arguments."""
+        kitfile = Kitfile(
+            manifestVersion="1.0",
+            package={
+                "name": "Test Package",
+                "version": "0.1.0",
+                "description": "A test package",
+                "authors": ["Test Author"],
+            },
+            model={
+                "name": "Test Model",
+                "path": "test_model_path/",
+                "framework": "test_framework",
+                "version": "1.0.0",
+                "description": "A test model",
+                "license": "Test License",
+                "parts": [],
+                "parameters": "",
+            },
+        )
+        assert kitfile.manifestVersion == "1.0"
+        assert kitfile.package.name == "Test Package"
+        assert kitfile.model.name == "Test Model"
 
 
 class TestKitfileMutation:
