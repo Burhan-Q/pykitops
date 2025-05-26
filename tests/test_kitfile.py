@@ -30,27 +30,27 @@ class TestKitfileCreation:
     def test_create_from_kwargs(self):
         """Test creation of a Kitfile from keyword arguments."""
         kitfile = Kitfile(
-            manifestVersion="1.0",
+            manifestVersion="6.6.6",
             package={
-                "name": "Test Package",
-                "version": "0.1.0",
-                "description": "A test package",
-                "authors": ["Test Author"],
+                "name": "Package Packer",
+                "version": "5.2.5",
+                "description": "Package your packages with Package Packer",
+                "authors": ["Patrick Packer"],
             },
             model={
-                "name": "Test Model",
-                "path": "test_model_path/",
-                "framework": "test_framework",
-                "version": "1.0.0",
-                "description": "A test model",
-                "license": "Test License",
+                "name": "Pack Model",
+                "path": "pack_model_path/",
+                "framework": "PackageRT",
+                "version": "1.2.3",
+                "description": "Model for packing packages",
+                "license": "Pack License",
                 "parts": [],
                 "parameters": "",
             },
         )
-        assert kitfile.manifestVersion == "1.0"
-        assert kitfile.package.name == "Test Package"
-        assert kitfile.model.name == "Test Model"
+        assert kitfile.manifestVersion == "6.6.6"
+        assert kitfile.package.name == "Package Packer"
+        assert kitfile.model.name == "Pack Model"
 
 
 class TestKitfileMutation:
