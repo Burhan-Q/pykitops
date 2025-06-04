@@ -129,6 +129,8 @@ class Kitfile(PydanticKitfile):
         try:
             data = yaml.safe_load(kitfile_path.read_text(encoding="utf-8"))
 
+            data = yaml.safe_load(kitfile_path.read_text(encoding="utf-8"))
+
         except yaml.YAMLError as e:
             if mark := getattr(e, "problem_mark", None):
                 raise yaml.YAMLError(f"Error parsing Kitfile at line{mark.line + 1}, column:{mark.column + 1}.") from e
@@ -190,6 +192,7 @@ class Kitfile(PydanticKitfile):
             >>> kitfile = Kitfile()
             >>> kitfile.save("path/to/Kitfile")
         """
+        Path(path).write_text(self.to_yaml(), encoding="utf-8")
         Path(path).write_text(self.to_yaml(), encoding="utf-8")
 
         if print:

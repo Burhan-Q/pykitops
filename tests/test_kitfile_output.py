@@ -96,7 +96,10 @@ def test_initialize_from_path_and_mutate(fixtures: dict[str, str]):
     kitfile = Kitfile(path=str(path))
 
     assert kitfile.manifestVersion == "1.0"
+    assert kitfile.manifestVersion == "1.0"
 
+    # Serialize to YAML, make sure nothing fails
+    kitfile.to_yaml()
     # Serialize to YAML, make sure nothing fails
     kitfile.to_yaml()
 
@@ -128,6 +131,8 @@ def test_empty_kitfile_and_mutate():
 
     # Serialize to YAML, make sure nothing fails
     kitfile.to_yaml()
+    # Serialize to YAML, make sure nothing fails
+    kitfile.to_yaml()
 
     kitfile.manifestVersion = "3.0"
     kitfile.package = Package.model_validate(
@@ -145,6 +150,14 @@ def test_empty_kitfile_and_mutate():
         "authors": ["Someone"],
     }
 
+    assert kitfile.manifestVersion == "3.0"
+    assert kitfile.package.get("name") == "Another-Package"
+    assert kitfile.package.get("version") == "3.0.0"
+    assert kitfile.package.get("description") == "Another description"
+    assert kitfile.package.get("authors") == ["Someone"]
+
+    # Serialize to YAML, make sure nothing fails
+    kitfile.to_yaml()
     assert kitfile.manifestVersion == "3.0"
     assert kitfile.package.get("name") == "Another-Package"
     assert kitfile.package.get("version") == "3.0.0"
