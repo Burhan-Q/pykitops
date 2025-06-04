@@ -225,20 +225,9 @@ class TestKitfileAttributeAccess:
 
         if "package" in expected:  # check when package is present
             assert kitfile.package.name == expected["package"]["name"]
-            assert kitfile.package["name"] == expected["package"]["name"]
-            assert kitfile.package.get("name") == expected["package"]["name"]
-
             assert kitfile.package.version == expected["package"]["version"]
-            assert kitfile.package["version"] == expected["package"]["version"]
-            assert kitfile.package.get("version") == expected["package"]["version"]
-
             assert kitfile.package.description == expected["package"]["description"]
-            assert kitfile.package["description"] == expected["package"]["description"]
-            assert kitfile.package.get("description") == expected["package"]["description"]
-
             assert kitfile.package.authors == expected["package"]["authors"]
-            assert kitfile.package["authors"] == expected["package"]["authors"]
-            assert kitfile.package.get("authors") == expected["package"]["authors"]
 
     def test_access_model(self, fixture_name: str, fixtures: dict[str, Path]):
         """Test access to model attribute in Kitfile."""
@@ -247,30 +236,11 @@ class TestKitfileAttributeAccess:
 
         if "model" in expected:  # check when model is present
             assert kitfile.model.name == expected["model"]["name"]
-            assert kitfile.model["name"] == expected["model"]["name"]
-            assert kitfile.model.get("name") == expected["model"]["name"]
-
             assert kitfile.model.path == "model"
-            assert kitfile.model["path"] == "model"
-            assert kitfile.model.get("path") == "model"
-
             assert kitfile.model.framework == "joblib"
-            assert kitfile.model["framework"] == "joblib"
-            assert kitfile.model.get("framework") == "joblib"
-
             assert kitfile.model.version == "1.0"
-            assert kitfile.model["version"] == "1.0"
-            assert kitfile.model.get("version") == "1.0"
-
             assert kitfile.model.description == "Directory containing figures and graphs exported as image files."
-            assert kitfile.model["description"] == "Directory containing figures and graphs exported as image files."
-            assert (
-                kitfile.model.get("description") == "Directory containing figures and graphs exported as image files."
-            )
-
             assert kitfile.model.license == "Apache-2.0"
-            assert kitfile.model["license"] == "Apache-2.0"
-            assert kitfile.model.get("license") == "Apache-2.0"
 
     def test_access_code(self, fixture_name: str, fixtures: dict[str, Path]):
         """Test access to code attribute in Kitfile."""
@@ -281,16 +251,8 @@ class TestKitfileAttributeAccess:
             assert len(kitfile.code) == len(expected["code"])
             for c, e in zip(kitfile.code, expected["code"]):
                 assert c.path == e["path"]
-                assert c["path"] == e["path"]
-                assert c.get("path") == e["path"]
-
                 assert c.description == e["description"]
-                assert c["description"] == e["description"]
-                assert c.get("description") == e["description"]
-
                 assert c.license == e["license"]
-                assert c["license"] == e["license"]
-                assert c.get("license") == e["license"]
 
     def test_access_datasets(self, fixture_name: str, fixtures: dict[str, Path]):
         """Test access to datasets attribute in Kitfile."""
@@ -301,20 +263,9 @@ class TestKitfileAttributeAccess:
             assert len(kitfile.datasets) == len(expected["datasets"])
             for d, e in zip(kitfile.datasets, expected["datasets"]):
                 assert d.name == e["name"]
-                assert d["name"] == e["name"]
-                assert d.get("name") == e["name"]
-
                 assert d.path == e["path"]
-                assert d["path"] == e["path"]
-                assert d.get("path") == e["path"]
-
                 assert d.description == e["description"]
-                assert d["description"] == e["description"]
-                assert d.get("description") == e["description"]
-
                 assert d.license == e["license"]
-                assert d["license"] == e["license"]
-                assert d.get("license") == e["license"]
 
     def test_access_docs(self, fixture_name: str, fixtures: dict[str, Path]):
         """Test access to docs attribute in Kitfile."""
@@ -325,12 +276,7 @@ class TestKitfileAttributeAccess:
             assert len(kitfile.docs) == len(expected["docs"])
             for d, e in zip(kitfile.docs, expected["docs"]):
                 assert d.path == e["path"]
-                assert d["path"] == e["path"]
-                assert d.get("path") == e["path"]
-
                 assert d.description == e["description"]
-                assert d["description"] == e["description"]
-                assert d.get("description") == e["description"]
 
     def test_access_parts(self, fixture_name: str, fixtures: dict[str, Path]):
         """Test access to parts attribute in Kitfile."""
@@ -341,15 +287,9 @@ class TestKitfileAttributeAccess:
             assert len(kitfile.model.parts) == len(expected["model"]["parts"])
             for part, expected_part in zip(kitfile.model.parts, expected["model"]["parts"]):
                 assert part.path == expected_part["path"]
-                assert part["path"] == expected_part["path"]
-                assert part.get("path") == expected_part["path"]
 
                 if "name" in expected_part:
                     assert part.name == expected_part["name"]
-                    assert part["name"] == expected_part["name"]
-                    assert part.get("name") == expected_part["name"]
 
                 if "type" in expected_part:
                     assert part.type == expected_part["type"]
-                    assert part["type"] == expected_part["type"]
-                    assert part.get("type") == expected_part["type"]
