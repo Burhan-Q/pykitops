@@ -96,10 +96,7 @@ def test_initialize_from_path_and_mutate(fixtures: dict[str, str]):
     kitfile = Kitfile(path=str(path))
 
     assert kitfile.manifestVersion == "1.0"
-    assert kitfile.manifestVersion == "1.0"
 
-    # Serialize to YAML, make sure nothing fails
-    kitfile.to_yaml()
     # Serialize to YAML, make sure nothing fails
     kitfile.to_yaml()
 
