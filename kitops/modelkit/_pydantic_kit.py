@@ -29,31 +29,6 @@ class BasePathModel(BaseModel):
 
     path: str | Path
 
-    def get(self, key: str, default: Any = None) -> Any:
-        """
-        Get a value from the model by key.
-
-        Args:
-            key (str): The key to retrieve.
-            default (Any): Default value if the key does not exist.
-
-        Returns:
-            Any: The value associated with the key, or the default value if the key does not exist.
-        """
-        return getattr(self, key, default)
-
-    def __getitem__(self, key: str) -> Any:
-        """
-        Get a value from the instance by key.
-
-        Args:
-            key (str): The key to retrieve.
-
-        Returns:
-            Any: The value associated with the key.
-        """
-        return getattr(self, key)
-
 
 class Package(BaseModel):
     """
@@ -70,31 +45,6 @@ class Package(BaseModel):
     version: Optional[str] = Field(default="", examples=["1.2.3", "0.13a"], coerce_numbers_to_str=True)
     description: Optional[str] = ""
     authors: Optional[list[str]] = []
-
-    def get(self, key: str, default: Any = None) -> Any:
-        """
-        Get a value from the model by key.
-
-        Args:
-            key (str): The key to retrieve.
-            default (Any): Default value if the key does not exist.
-
-        Returns:
-            Any: The value associated with the key, or the default value if the key does not exist.
-        """
-        return getattr(self, key, default)
-
-    def __getitem__(self, key: str) -> Any:
-        """
-        Get a value from the instance by key.
-
-        Args:
-            key (str): The key to retrieve.
-
-        Returns:
-            Any: The value associated with the key.
-        """
-        return getattr(self, key)
 
 
 class CodeEntry(BasePathModel):
@@ -174,8 +124,8 @@ class ModelSection(BasePathModel):
     version: Optional[str] = Field(default="", examples=["0.0a13", "1.8.0"], coerce_numbers_to_str=True)
     description: Optional[str] = ""
     license: Optional[str] = ""
-    parts: Optional[list[ModelPart]] = []
-    parameters: Optional[Any] = Field(
+    parts: list[ModelPart] = []
+    parameters: Any = Field(
         default=None,
         description=(
             "An arbitrary section of YAML that can be used to store any additional data that may be relevant to the"
