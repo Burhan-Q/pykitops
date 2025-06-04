@@ -193,7 +193,6 @@ class Kitfile(PydanticKitfile):
             >>> kitfile.save("path/to/Kitfile")
         """
         Path(path).write_text(self.to_yaml(), encoding="utf-8")
-        Path(path).write_text(self.to_yaml(), encoding="utf-8")
 
         if print:
             warn(
